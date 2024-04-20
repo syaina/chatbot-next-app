@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent } from "react";
+import { ChangeEvent, MouseEventHandler } from "react";
 import Image from "next/image";
 import style from "./BubbleChat.module.css";
 
@@ -15,20 +15,25 @@ export interface IMessage {
   content: string;
   createdAt?: Date | undefined;
 }
-interface IBubbleChatProps {
+export interface IBubbleChatProps {
   botAvatar: string;
   message: IMessage;
   isChecked: boolean;
   isShowCheckbox: boolean;
+  bubbleAction: (
+    id: string,
+    event: "copy" | "reload" | "thumbup" | "thumbdown"
+  ) => void;
   updateCheckedList: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const BubbleChat = ({
   botAvatar,
   message,
-  isShowCheckbox,
-  updateCheckedList,
   isChecked,
+  isShowCheckbox,
+  bubbleAction,
+  updateCheckedList,
 }: IBubbleChatProps) => {
   const date = message.createdAt ? new Date(message.createdAt) : null;
   const timestamp = `${date?.getHours()}:${
@@ -75,10 +80,22 @@ export const BubbleChat = ({
         {/* Assistant's bubbles message actions */}
         {message.role === "assistant" && (
           <div className="action-wrapper flex gap-x-2.5 pb-1.5 justify-end mt-2 align-bottom">
-            <ArrowClockwiseIcon className="cursor-pointer" />
-            <CopyIcon className="cursor-pointer" />
-            <ThumbUpIcon className="cursor-pointer" />
-            <ThumbDownIcon className="cursor-pointer" />
+            <ArrowClockwiseIcon
+              className="cursor-pointer"
+              onClick={() => bubbleAction(message.id, "reload")}
+            />
+            <CopyIcon
+              className="cursor-pointer"
+              onClick={() => bubbleAction(message.id, "copy")}
+            />
+            <ThumbUpIcon
+              className="cursor-pointer"
+              onClick={() => bubbleAction(message.id, "thumbup")}
+            />
+            <ThumbDownIcon
+              className="cursor-pointer"
+              onClick={() => bubbleAction(message.id, "thumbdown")}
+            />
           </div>
         )}
       </div>

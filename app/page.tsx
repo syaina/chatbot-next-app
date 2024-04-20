@@ -4,13 +4,13 @@ import { useChat } from "ai/react";
 import style from "./page.module.css";
 import ArrowUpIcon from "./components/Icons/ArrowUp";
 import { Navbar, StatusDelete } from "./components/Navbar";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Trash from "./components/Icons/Trash";
 import { Modal } from "./components/Modal";
 import { ChatContainer } from "./components/ChatContainer";
-import { IMessage } from "./components/BubbleChat";
 import { DeleteChat } from "./components/Modal/DeleteChat";
 import { Message } from "ai";
+import { Rating } from "./components/Modal/Rating";
 
 export default function Chat() {
   const {
@@ -26,6 +26,13 @@ export default function Chat() {
   const [deleteStatus, setDeleteStatus] = useState<StatusDelete>("inactive");
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const [ratingData, setRatingData] = useState([]);
+  const [bubbleActionActive, setBubbleActionActive] = useState<{
+    id: string;
+    action: string;
+  }>({
+    id: "",
+    action: "",
+  });
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -46,6 +53,7 @@ export default function Chat() {
       );
 
       setMessages(historyLocal.messages);
+      setRatingData(historyLocal.ratings);
     }
   }, []);
 
@@ -83,6 +91,52 @@ export default function Chat() {
     document?.getElementById("modal-delete")?.close();
   };
 
+  const handleBubbleAction = (
+    id: string,
+    event: "copy" | "reload" | "thumbup" | "thumbdown"
+  ) => {
+    setBubbleActionActive({ id: id, action: event });
+    switch (event) {
+      case "reload":
+        break;
+
+      case "copy":
+        break;
+      case "thumbup":
+        document?.getElementById("modal-rating")?.showModal() as HTMLElement;
+        break;
+      case "thumbdown":
+        document?.getElementById("modal-rating")?.showModal() as HTMLElement;
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleSendRating = (rating: string) => {
+    localStorage.setItem(
+      "avatara-chat-history",
+      JSON.stringify({
+        messages: messages,
+        ratings: [
+          ...ratingData,
+          {
+            id: bubbleActionActive.id,
+            action: bubbleActionActive.action,
+            rating: rating,
+          },
+        ],
+      })
+    );
+
+    setBubbleActionActive({
+      id: "",
+      action: "",
+    });
+
+    document?.getElementById("modal-rating")?.close();
+  };
+
   const isLastMessageUser = messages[messages.length - 1]?.role === "user";
 
   return (
@@ -96,8 +150,16 @@ export default function Chat() {
         onClickDeleteChat={onClickDeleteChat}
       />
 
+      {/* Delete Chat Modal */}
       <Modal id="modal-delete" title={"Hapus Chat"}>
         <DeleteChat deleteChat={handleDeleteChat} />
+      </Modal>
+
+      <Modal id="modal-rating" title="Rating" isShowCloseButton>
+        <Rating
+          handleSendRating={handleSendRating}
+          type={bubbleActionActive.action === "thumbup" ? "like" : "dislike"}
+        />
       </Modal>
 
       {/* Content */}
@@ -107,6 +169,7 @@ export default function Chat() {
         isShowCheckbox={deleteStatus === "active"}
         checkedList={checkedList}
         setCheckedList={setCheckedList}
+        bubbleAction={handleBubbleAction}
       />
 
       <div className={`${style.placeholder}`}></div>

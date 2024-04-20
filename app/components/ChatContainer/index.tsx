@@ -2,14 +2,18 @@
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import style from "../../page.module.css";
 import { getDate } from "@/app/helpers/getDate";
-import { BubbleChat, IMessage } from "../BubbleChat";
+import { BubbleChat, IBubbleChatProps, IMessage } from "../BubbleChat";
 import { Message } from "ai";
 
 interface IChatContainer {
   error: undefined | { cause?: unknown };
-  messages: IMessage[];
-  isShowCheckbox: boolean;
+  messages: Message[];
   checkedList: string[];
+  isShowCheckbox: boolean;
+  bubbleAction: (
+    id: string,
+    event: "copy" | "reload" | "thumbup" | "thumbdown"
+  ) => void;
   setCheckedList: Dispatch<SetStateAction<string[]>>;
 }
 
@@ -64,6 +68,7 @@ export const ChatContainer = (props: IChatContainer) => {
           isShowCheckbox={props.isShowCheckbox}
           isChecked={props.checkedList.includes(message.id)}
           updateCheckedList={updateCheckedList.bind(null, message.id)}
+          bubbleAction={props.bubbleAction}
         />
       ))}
     </div>
