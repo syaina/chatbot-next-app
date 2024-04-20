@@ -7,22 +7,47 @@ import { Navbar, StatusDelete } from "./components/Navbar";
 import { useEffect, useRef, useState } from "react";
 import Trash from "./components/Icons/Trash";
 import { Modal } from "./components/Modal";
-import { BubbleChat } from "./components/BubbleChat";
+import { ChatContainer } from "./components/ChatContainer";
+import { IMessage } from "./components/BubbleChat";
 
 export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat();
-  
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error } =
+    useChat();
+
+  const [history, setHistory] = useState<{ messages: any; ratings: any }>({
+    messages: [],
+    ratings: null,
+  });
+
   const [isShowCheckbox, setisShowCheckbox] = useState<boolean>(false);
   const [checkedList, setCheckedList] = useState<string[]>([]);
 
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const [ratingData, setRatingData] = useState([]);
 
-  //* Handling scrolling to newest bubble chat
   useEffect(() => {
-    if (scrollRef.current) {
-      window.scrollTo(0, scrollRef.current.scrollHeight + 64)
+    if (messages.length > 0) {
+      localStorage.setItem(
+        "avatara-chat-history",
+        JSON.stringify({
+          messages: [...history.messages, ...messages],
+          ratings: ratingData,
+        })
+      );
     }
-  }, [messages]);
+  }, [messages, ratingData]);
+
+  useEffect(() => {
+    if (localStorage.getItem("avatara-chat-history")) {
+      const historyLocal = JSON.parse(
+        localStorage.getItem("avatara-chat-history") as string
+      );
+
+      setHistory({
+        messages: historyLocal.messages,
+        ratings: historyLocal.ratings,
+      });
+    }
+  }, []);
 
   const onClickDeleteChat = (status: StatusDelete) => {
     if (status === "active") {
@@ -30,37 +55,33 @@ export default function Chat() {
       return;
     } else if (status === "inactive") {
       setisShowCheckbox(false);
+      setCheckedList([]);
       return;
     } else {
       return;
     }
-  };
-
-  const updateCheckedList = (id: string) => {
-    const currentList = [...checkedList] as string[];
-
-    if (checkedList.includes(id)) {
-      const index = checkedList.findIndex((list) => list === id);
-      currentList.splice(index, 1);
-    } else {
-      currentList.push(id);
-    }
-
-    setCheckedList(currentList);
   };
 
   const handleSelectAll = () => {
     const idList = messages.map((message) => message.id);
+    const idListHistory = history.messages.map(
+      (message: IMessage) => message.id
+    );
 
-    setCheckedList(idList);
+    setCheckedList([...idList, ...idListHistory]);
   };
 
-  const isLastMessageUser = messages[messages.length - 1]?.role === 'user'
+  const isLastMessageUser = messages[messages.length - 1]?.role === "user";
 
   return (
     <div className={`artboard phone-3 base-10 ${style.chatContainer}`}>
       {/* Navbar  */}
-      <Navbar botAvatar="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" botName="Syaina" isTyping={isLoading && isLastMessageUser} onClickDeleteChat={onClickDeleteChat} />
+      <Navbar
+        botAvatar="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+        botName="Syaina"
+        isTyping={isLoading && isLastMessageUser}
+        onClickDeleteChat={onClickDeleteChat}
+      />
 
       <Modal id="modal-delete" title={"Hapus Chat"}>
         <>
@@ -83,31 +104,14 @@ export default function Chat() {
       </Modal>
 
       {/* Content */}
-      <div className={`${style.container} ${style.bubbleContainer} px-5`} ref={scrollRef}>
-        <div className="text-center">
-          <div className="badge badge-ghost bg-ghost py-1 px-1.5 font-xs-semibold rounded mx-auto">
-            Today
-          </div>
-        </div>
-
-        {/* Handling no chat */}
-        {
-          !error && messages.length === 0 && (
-            <p className="items-center mt-5 text-center">Hi! 👋 I&apos;m your friend. <br/> Tell me what you feel today 😊</p>
-          )
-        }
-
-        {messages.map((message) => (
-          <BubbleChat
-            key={message.id}
-            botAvatar="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-            message={message}
-            isShowCheckbox={isShowCheckbox}
-            isChecked={checkedList.includes(message.id)}
-            updateCheckedList={updateCheckedList.bind(null, message.id)}
-          />
-        ))}
-      </div>
+      <ChatContainer
+        messages={messages}
+        history={history.messages}
+        error={error}
+        isShowCheckbox={isShowCheckbox}
+        checkedList={checkedList}
+        setCheckedList={setCheckedList}
+      />
 
       <div className={`${style.placeholder}`}></div>
 
@@ -149,7 +153,10 @@ export default function Chat() {
             onChange={handleInputChange}
           />
 
-          <button className={`${style.arrowUpButton}`} disabled={isLoading || input.length === 0}>
+          <button
+            className={`${style.arrowUpButton}`}
+            disabled={isLoading || input.length === 0}
+          >
             <ArrowUpIcon />
           </button>
         </form>
