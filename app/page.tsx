@@ -101,6 +101,11 @@ export default function Chat() {
         break;
 
       case "copy":
+        const selectedChat = messages.filter((message) => message.id === id);
+        if (!selectedChat.length) break;
+
+        navigator?.clipboard?.writeText(selectedChat[0].content);
+
         break;
       case "thumbup":
         document?.getElementById("modal-rating")?.showModal() as HTMLElement;
