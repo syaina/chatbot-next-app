@@ -8,7 +8,6 @@ import { Message } from "ai";
 interface IChatContainer {
   error: undefined | { cause?: unknown };
   messages: IMessage[];
-  history: IMessage[];
   isShowCheckbox: boolean;
   checkedList: string[];
   setCheckedList: Dispatch<SetStateAction<string[]>>;
@@ -50,25 +49,11 @@ export const ChatContainer = (props: IChatContainer) => {
       </div>
 
       {/* Handling no chat */}
-      {!props.error &&
-        props.messages.length === 0 &&
-        props.history.length === 0 && (
-          <p className="items-center mt-5 text-center">
-            Hi! 👋 I&apos;m your friend. <br /> Tell me what you feel today 😊
-          </p>
-        )}
-
-      {/* Display chat history */}
-      {props.history?.map((message: Message) => (
-        <BubbleChat
-          key={message.id}
-          botAvatar="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-          message={message}
-          isShowCheckbox={props.isShowCheckbox}
-          isChecked={props.checkedList.includes(message.id)}
-          updateCheckedList={updateCheckedList.bind(null, message.id)}
-        />
-      ))}
+      {!props.error && props.messages.length === 0 && (
+        <p className="items-center mt-5 text-center">
+          Hi! 👋 I&apos;m your friend. <br /> Tell me what you feel today 😊
+        </p>
+      )}
 
       {/* Display streaming messages */}
       {props.messages?.map((message: Message) => (
