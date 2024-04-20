@@ -1,0 +1,67 @@
+.chatContainer {
+  margin: auto;
+  height: 100dvh !important;
+  max-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding-bottom: 1rem;
+}
+
+.container {
+  padding-top: calc(64px + 16px);
+}
+
+.bubbleContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inputWrapper {
+  position: fixed;
+  bottom: 0;
+  background: #fff;
+  width: 100%;
+  padding: 15px 20px;
+  max-width: 414px;
+}
+
+.deleteFooter {
+  position: fixed;
+  bottom: 0;
+  background: #fff;
+  width: 100%;
+}
+
+.inputField {
+  padding: 15px 40px 15px 16px;
+  border-radius: 6px;
+  border: 1px solid #dedede;
+  bottom: 1rem;
+  box-sizing: border-box;
+}
+
+.inputField:focus {
+  border: 1px solid #dedede;
+  outline: none;
+}
+
+.arrowUpButton {
+  background: #2b2e63;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: calc(1.25rem + 12px);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.placeholder {
+  height: 78px;
+}
