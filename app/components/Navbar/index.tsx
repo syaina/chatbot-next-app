@@ -37,21 +37,14 @@ export const Navbar = (props: Navbar) => {
       <div className="flex-1 gap-2">
         <div className="avatar">
           <div className="w-8 ml-2 rounded-full">
-            <Image
-              src={props.botAvatar}
-              alt="avatar"
-              width={32}
-              height={32}
-            />
+            <Image src={props.botAvatar} alt="avatar" width={32} height={32} />
           </div>
         </div>
         <div className="flex-none">
           <p className="font-lg-body-1-semibold">{props.botName}</p>
-          {
-            props.isTyping && (
-              <p className="font-md-button-regular ">Typings...</p>
-            )
-          }
+          {props.isTyping && (
+            <p className="font-md-button-regular ">Typings...</p>
+          )}
         </div>
       </div>
       <div className="flex-none">
