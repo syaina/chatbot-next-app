@@ -21,6 +21,8 @@ module.exports = {
         transparent: "none",
         error: "#fe6052",
         blue: "#2B2E63",
+        border: "#DEDEDE",
+        ghost: "#FAFAFA",
       },
       width: {
         14: "14px",
