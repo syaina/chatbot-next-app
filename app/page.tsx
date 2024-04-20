@@ -9,19 +9,22 @@ import Trash from "./components/Icons/Trash";
 import { Modal } from "./components/Modal";
 import { ChatContainer } from "./components/ChatContainer";
 import { IMessage } from "./components/BubbleChat";
+import { DeleteChat } from "./components/Modal/DeleteChat";
+import { Message } from "ai";
 
 export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, error } =
-    useChat();
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    isLoading,
+    error,
+    setMessages,
+  } = useChat();
 
-  const [history, setHistory] = useState<{ messages: any; ratings: any }>({
-    messages: [],
-    ratings: null,
-  });
-
-  const [isShowCheckbox, setisShowCheckbox] = useState<boolean>(false);
+  const [deleteStatus, setDeleteStatus] = useState<StatusDelete>("inactive");
   const [checkedList, setCheckedList] = useState<string[]>([]);
-
   const [ratingData, setRatingData] = useState([]);
 
   useEffect(() => {
@@ -29,7 +32,7 @@ export default function Chat() {
       localStorage.setItem(
         "avatara-chat-history",
         JSON.stringify({
-          messages: [...history.messages, ...messages],
+          messages: messages,
           ratings: ratingData,
         })
       );
@@ -42,33 +45,42 @@ export default function Chat() {
         localStorage.getItem("avatara-chat-history") as string
       );
 
-      setHistory({
-        messages: historyLocal.messages,
-        ratings: historyLocal.ratings,
-      });
+      setMessages(historyLocal.messages);
     }
   }, []);
 
   const onClickDeleteChat = (status: StatusDelete) => {
-    if (status === "active") {
-      setisShowCheckbox(true);
-      return;
-    } else if (status === "inactive") {
-      setisShowCheckbox(false);
+    setDeleteStatus(status);
+
+    if (status === "inactive") {
       setCheckedList([]);
-      return;
-    } else {
-      return;
     }
   };
 
   const handleSelectAll = () => {
     const idList = messages.map((message) => message.id);
-    const idListHistory = history.messages.map(
-      (message: IMessage) => message.id
+
+    setCheckedList(idList);
+  };
+
+  const handleDeleteChat = () => {
+    const afterDeleteMessages = messages.filter(
+      (message: Message) => !checkedList.includes(message.id)
     );
 
-    setCheckedList([...idList, ...idListHistory]);
+    setMessages(afterDeleteMessages);
+
+    localStorage.setItem(
+      "avatara-chat-history",
+      JSON.stringify({
+        messages: afterDeleteMessages,
+        ratings: ratingData,
+      })
+    );
+
+    setDeleteStatus("inactive");
+    setCheckedList([]);
+    document?.getElementById("modal-delete")?.close();
   };
 
   const isLastMessageUser = messages[messages.length - 1]?.role === "user";
@@ -80,35 +92,19 @@ export default function Chat() {
         botAvatar="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
         botName="Syaina"
         isTyping={isLoading && isLastMessageUser}
+        deleteStatus={deleteStatus}
         onClickDeleteChat={onClickDeleteChat}
       />
 
       <Modal id="modal-delete" title={"Hapus Chat"}>
-        <>
-          <p className="py-4">
-            Kamu akan menghapus chat ini, chat yang telah dihapus tidak dapat
-            dipulihkan
-          </p>
-          <button className="btn cursor-pointer btn-block btn-error normal-case font-md-button-bold text-white">
-            Hapus Sekarang
-          </button>
-          <button
-            className="btn cursor-pointer btn-block btn-ghost normal-case font-md-button-bold text-blue"
-            onClick={() =>
-              document?.getElementById("modal-delete")?.close() as HTMLElement
-            }
-          >
-            Kembali
-          </button>
-        </>
+        <DeleteChat deleteChat={handleDeleteChat} />
       </Modal>
 
       {/* Content */}
       <ChatContainer
         messages={messages}
-        history={history.messages}
         error={error}
-        isShowCheckbox={isShowCheckbox}
+        isShowCheckbox={deleteStatus === "active"}
         checkedList={checkedList}
         setCheckedList={setCheckedList}
       />
@@ -116,7 +112,7 @@ export default function Chat() {
       <div className={`${style.placeholder}`}></div>
 
       {/* Footer */}
-      {isShowCheckbox ? (
+      {deleteStatus === "active" ? (
         <div className={`${style.deleteFooter}`}>
           <div className="divider m-0" />
           <div className="flex justify-between items-center p-6">

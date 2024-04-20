@@ -11,19 +11,16 @@ interface Navbar {
   isTyping: boolean;
   botName: string;
   botAvatar: string;
+  deleteStatus: StatusDelete;
   onClickDeleteChat: (status: StatusDelete) => void;
 }
 
 export const Navbar = (props: Navbar) => {
-  const [isDeleteActive, setIsDeleteActive] = useState(false);
-
   const handleDelete = () => {
     props.onClickDeleteChat("active");
-    setIsDeleteActive(true);
   };
 
   const handleCancelDelete = () => {
-    setIsDeleteActive(false);
     props.onClickDeleteChat("inactive");
   };
 
@@ -50,7 +47,7 @@ export const Navbar = (props: Navbar) => {
       <div className="flex-none">
         <div className="dropdown dropdown-end">
           <div className="rounded-full">
-            {isDeleteActive ? (
+            {props.deleteStatus === "active" ? (
               <button
                 className="btn btn-ghost hover:bg-transparent font-lg-subtitle-1-regular normal-case"
                 onClick={handleCancelDelete}
@@ -64,7 +61,7 @@ export const Navbar = (props: Navbar) => {
             )}
           </div>
 
-          {!isDeleteActive && (
+          {props.deleteStatus === "inactive" && (
             <ul
               tabIndex={0}
               className="menu menu-sm dropdown-content mt-3 z-[1] py-3 px-4 shadow bg-base-100 rounded-lg w-147 h-11"
