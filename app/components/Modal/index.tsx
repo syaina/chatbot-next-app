@@ -7,7 +7,7 @@ interface Modal {
 
 export const Modal = (props: Modal) => (
   <dialog id={props.id} className="modal">
-    <div className="modal-box">
+    <div className="modal-box max-w-xs">
       {props.isShowCloseButton && (
         <form method="dialog">
           <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">

@@ -11,6 +11,7 @@ import { ChatContainer } from "./components/ChatContainer";
 import { DeleteChat } from "./components/Modal/DeleteChat";
 import { Message } from "ai";
 import { Rating } from "./components/Modal/Rating";
+import { AlreadyRating } from "./components/Modal/AlreadyRating";
 
 interface IRatingData {
   id: string;
@@ -91,6 +92,16 @@ export default function Chat() {
     event: "copy" | "reload" | "thumbup" | "thumbdown"
   ) => {
     setBubbleActionActive({ id: id, action: event });
+
+    let isAlreadyRating = false;
+    if (event === "thumbup" || event === "thumbdown") {
+      isAlreadyRating = ratingData.filter(
+        (rating: IRatingData) => rating.id === id
+      )[0]?.id
+        ? true
+        : false;
+    }
+
     switch (event) {
       case "reload":
         break;
@@ -103,17 +114,25 @@ export default function Chat() {
 
         break;
       case "thumbup":
-        const isAlreadyRating = ratingData.filter(
-          (rating: IRatingData) => rating.id === id
-        )[0]?.id;
-
         if (!isAlreadyRating) {
           document?.getElementById("modal-rating")?.showModal() as HTMLElement;
+        } else {
+          document
+            .getElementById("modal-already-rating")
+            ?.showModal() as HTMLElement;
         }
         break;
+
       case "thumbdown":
-        document?.getElementById("modal-rating")?.showModal() as HTMLElement;
+        if (!isAlreadyRating) {
+          document?.getElementById("modal-rating")?.showModal() as HTMLElement;
+        } else {
+          document
+            .getElementById("modal-already-rating")
+            ?.showModal() as HTMLElement;
+        }
         break;
+
       default:
         break;
     }
@@ -190,6 +209,11 @@ export default function Chat() {
           handleSendRating={handleSendRating}
           type={bubbleActionActive.action === "thumbup" ? "like" : "dislike"}
         />
+      </Modal>
+
+      {/* Already Rating Modal */}
+      <Modal id="modal-already-rating" title="" isShowCloseButton>
+        <AlreadyRating />
       </Modal>
 
       {/* Content */}
