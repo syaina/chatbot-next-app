@@ -40,7 +40,7 @@ export const Navbar = (props: Navbar) => {
         <div className="flex-none">
           <p className="font-lg-body-1-semibold">{props.botName}</p>
           {props.isTyping && (
-            <p className="font-md-button-regular ">Typings...</p>
+            <p className="font-md-button-regular ">AI sedang mengetik...</p>
           )}
         </div>
       </div>
