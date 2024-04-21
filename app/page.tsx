@@ -18,6 +18,11 @@ interface IRatingData {
   rating: string;
 }
 
+interface IBubbleAction {
+  id: string;
+  action: string;
+}
+
 export default function Chat() {
   const {
     messages,
@@ -32,37 +37,14 @@ export default function Chat() {
   const [deleteStatus, setDeleteStatus] = useState<StatusDelete>("inactive");
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const [ratingData, setRatingData] = useState<IRatingData[]>([]);
-  const [bubbleActionActive, setBubbleActionActive] = useState<{
-    id: string;
-    action: string;
-  }>({
+  const [bubbleActionActive, setBubbleActionActive] = useState<IBubbleAction>({
     id: "",
     action: "",
   });
 
-  useEffect(() => {
-    if (messages.length > 0) {
-      localStorage.setItem(
-        "avatara-chat-history",
-        JSON.stringify({
-          messages: messages,
-          ratings: ratingData,
-        })
-      );
-    }
-  }, [messages, ratingData]);
+  const isLastMessageUser = messages[messages.length - 1]?.role === "user";
 
-  useEffect(() => {
-    if (localStorage.getItem("avatara-chat-history")) {
-      const historyLocal = JSON.parse(
-        localStorage.getItem("avatara-chat-history") as string
-      );
-
-      setMessages(historyLocal.messages);
-      setRatingData(historyLocal.ratings);
-    }
-  }, []);
-
+  //* Handling when user clicked navbar delete menu
   const onClickDeleteChat = (status: StatusDelete) => {
     setDeleteStatus(status);
 
@@ -71,6 +53,7 @@ export default function Chat() {
     }
   };
 
+  //* Select all chat when user clicked 'Pilih Semua'
   const handleSelectAll = () => {
     const idList = messages.map((message) => message.id);
 
@@ -102,6 +85,7 @@ export default function Chat() {
     document?.getElementById("modal-delete")?.close();
   };
 
+  //* Handling when user click bubble action
   const handleBubbleAction = (
     id: string,
     event: "copy" | "reload" | "thumbup" | "thumbdown"
@@ -119,7 +103,13 @@ export default function Chat() {
 
         break;
       case "thumbup":
-        document?.getElementById("modal-rating")?.showModal() as HTMLElement;
+        const isAlreadyRating = ratingData.filter(
+          (rating: IRatingData) => rating.id === id
+        )[0]?.id;
+
+        if (!isAlreadyRating) {
+          document?.getElementById("modal-rating")?.showModal() as HTMLElement;
+        }
         break;
       case "thumbdown":
         document?.getElementById("modal-rating")?.showModal() as HTMLElement;
@@ -129,6 +119,7 @@ export default function Chat() {
     }
   };
 
+  //* Handling when rating is submitted
   const handleSendRating = (rating: string) => {
     const newData = {
       id: bubbleActionActive.id,
@@ -153,14 +144,37 @@ export default function Chat() {
     document?.getElementById("modal-rating")?.close();
   };
 
-  const isLastMessageUser = messages[messages.length - 1]?.role === "user";
+  //* Handling store data into local storage
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem(
+        "avatara-chat-history",
+        JSON.stringify({
+          messages: messages,
+          ratings: ratingData,
+        })
+      );
+    }
+  }, [messages, ratingData]);
+
+  //^ Get local storage data when refresh
+  useEffect(() => {
+    if (localStorage.getItem("avatara-chat-history")) {
+      const historyLocal = JSON.parse(
+        localStorage.getItem("avatara-chat-history") as string
+      );
+
+      setMessages(historyLocal.messages);
+      setRatingData(historyLocal.ratings);
+    }
+  }, []);
 
   return (
     <div className={`artboard phone-3 base-10 ${style.chatContainer}`}>
       {/* Navbar  */}
       <Navbar
         botAvatar="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-        botName="Syaina"
+        botName="Leyroid"
         isTyping={isLoading && isLastMessageUser}
         deleteStatus={deleteStatus}
         onClickDeleteChat={onClickDeleteChat}
