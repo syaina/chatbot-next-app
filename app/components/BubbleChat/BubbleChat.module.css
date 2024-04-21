@@ -1,0 +1,12 @@
+
+.chatBubbleSecondary {
+  color: #212121;
+  background-color: var(--color-secondary);
+  text-align: left;
+}
+
+.chatBubblePrimary {
+  color: #fafafa;
+  background-color: var(--color-primary);
+  text-align: left;
+}

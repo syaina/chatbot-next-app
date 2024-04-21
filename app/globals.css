@@ -1,0 +1,111 @@
+@import url("https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap");
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+:root {
+  --font-primary: "Mulish";
+  --color-secondary: #ededed;
+  --color-primary: #2b2e63;
+  --color-orange: #fe6052;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-primary);
+}
+
+body {
+  white-space: pre-line;
+}
+
+.font-xs-semibold {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 12.55px;
+  letter-spacing: 0.015em;
+}
+
+.font-xs-regular {
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 12.55px;
+  letter-spacing: 0.015em;
+}
+
+.font-lg-body-1-semibold {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20.08px;
+  letter-spacing: 0.005em;
+}
+
+.font-md-body-2-regular {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 17.57px;
+  letter-spacing: 0.0025em;
+  text-align: center;
+}
+
+.font-lg-body-1-bold {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 20.08px;
+  letter-spacing: 0.005em;
+}
+
+.font-lg-subtitle-1-regular {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20.08px;
+  letter-spacing: 0.0015em;
+}
+
+.font-lg-subtitle-1-bold {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 20.08px;
+  letter-spacing: 0.0015em;
+}
+
+.font-md-subtitle-2-semibold {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 17.57px;
+  letter-spacing: 0.001em;
+}
+
+.font-md-button-regular {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 17.57px;
+  letter-spacing: 0.0125em;
+  text-align: center;
+}
+
+.font-md-button-bold {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 17.57px;
+  letter-spacing: 0.0125em;
+  text-align: center;
+}
+
+.bg-secondary {
+  background-color: var(--color-secondary);
+}
+
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.dropdown-content ul li:active {
+  background-color: none; /* Change to the desired background color */
+}
+
+.divider {
+  height: fit-content;
+}
