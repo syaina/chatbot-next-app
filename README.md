@@ -3,14 +3,14 @@
 ## Table of Contents
 
 - [Chatbot Application Documentation](#chatbot-application-documentation)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [TechStack](#techstack)
-  - [Installation \& Running](#installation--running)
-  - [Environtment Variables](#environtment-variables)
-  - [Folder Structure](#folder-structure)
-  - [Routing](#routing)
-  - [API Routes](#api-routes)
+- [Table of Contents](#table-of-contents)
+- [Introduction](#introduction)
+- [TechStack](#techstack)
+- [Installation \& Running](#installation--running)
+- [Environtment Variables](#environtment-variables)
+- [Folder Structure](#folder-structure)
+- [Routing](#routing)
+- [API Routes](#api-routes)
 
 ---
 
