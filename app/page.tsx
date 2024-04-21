@@ -83,7 +83,7 @@ export default function Chat() {
 
     setDeleteStatus("inactive");
     setCheckedList([]);
-    document?.getElementById("modal-delete")?.close();
+    document?.getElementById("modal-delete")?.close() as HTMLElement;
   };
 
   //* Handling when user click bubble action
