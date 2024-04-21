@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, MouseEventHandler } from "react";
+import { ChangeEvent, useState } from "react";
 import Image from "next/image";
 import style from "./BubbleChat.module.css";
 
@@ -35,6 +35,10 @@ export const BubbleChat = ({
   bubbleAction,
   updateCheckedList,
 }: IBubbleChatProps) => {
+  const [copyTooltipText, setCopyTooltipText] =
+    useState<string>("Copy to clipboard");
+
+  //* Get date bubble
   const date = message.createdAt ? new Date(message.createdAt) : null;
   const timestamp = `${date?.getHours()}:${
     date?.getMinutes().toString().length === 1
@@ -84,10 +88,18 @@ export const BubbleChat = ({
               className="cursor-pointer"
               onClick={() => bubbleAction(message.id, "reload")}
             />
-            <CopyIcon
-              className="cursor-pointer"
-              onClick={() => bubbleAction(message.id, "copy")}
-            />
+            <div
+              className="tooltip tooltip-bottom tooltip-ghost"
+              data-tip={copyTooltipText}
+            >
+              <CopyIcon
+                className="cursor-pointer"
+                onClick={() => {
+                  bubbleAction(message.id, "copy");
+                  setCopyTooltipText("Copied to clipboard!");
+                }}
+              />
+            </div>
             <ThumbUpIcon
               className="cursor-pointer"
               onClick={() => bubbleAction(message.id, "thumbup")}
