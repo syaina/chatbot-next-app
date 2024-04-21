@@ -15,6 +15,11 @@ export const Rating = (props: IRatingProps) => {
     setRating(event.target.value);
   };
 
+  const handleSendRating = () => {
+    props.handleSendRating(rating);
+    setRating("");
+  };
+
   if (props.type === "like") {
     return (
       <div className="flex flex-col items-center gap-4">
@@ -35,7 +40,7 @@ export const Rating = (props: IRatingProps) => {
 
         <button
           className="btn btn-primary rounded-lg w-full"
-          onClick={() => props.handleSendRating(rating)}
+          onClick={handleSendRating}
           disabled={rating.length === 0}
         >
           KIRIM
@@ -57,12 +62,13 @@ export const Rating = (props: IRatingProps) => {
         <textarea
           className="textarea textarea-bordered w-full bg-ghost"
           placeholder="Berikan Tanggapanmu"
+          value={rating}
           onChange={handleRating}
         />
 
         <button
           className="btn btn-primary rounded-lg w-full"
-          onClick={() => props.handleSendRating(rating)}
+          onClick={handleSendRating}
           disabled={rating.length === 0}
         >
           KIRIM

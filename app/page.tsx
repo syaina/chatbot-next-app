@@ -12,6 +12,12 @@ import { DeleteChat } from "./components/Modal/DeleteChat";
 import { Message } from "ai";
 import { Rating } from "./components/Modal/Rating";
 
+interface IRatingData {
+  id: string;
+  action: string;
+  rating: string;
+}
+
 export default function Chat() {
   const {
     messages,
@@ -25,7 +31,7 @@ export default function Chat() {
 
   const [deleteStatus, setDeleteStatus] = useState<StatusDelete>("inactive");
   const [checkedList, setCheckedList] = useState<string[]>([]);
-  const [ratingData, setRatingData] = useState([]);
+  const [ratingData, setRatingData] = useState<IRatingData[]>([]);
   const [bubbleActionActive, setBubbleActionActive] = useState<{
     id: string;
     action: string;
@@ -76,13 +82,18 @@ export default function Chat() {
       (message: Message) => !checkedList.includes(message.id)
     );
 
+    const ratingAfterDeleteMessages = ratingData.filter(
+      (rating: IRatingData) => !checkedList.includes(rating.id)
+    );
+
     setMessages(afterDeleteMessages);
+    setRatingData(ratingAfterDeleteMessages);
 
     localStorage.setItem(
       "avatara-chat-history",
       JSON.stringify({
         messages: afterDeleteMessages,
-        ratings: ratingData,
+        ratings: ratingAfterDeleteMessages,
       })
     );
 
@@ -119,21 +130,21 @@ export default function Chat() {
   };
 
   const handleSendRating = (rating: string) => {
+    const newData = {
+      id: bubbleActionActive.id,
+      action: bubbleActionActive.action,
+      rating: rating,
+    };
+
     localStorage.setItem(
       "avatara-chat-history",
       JSON.stringify({
         messages: messages,
-        ratings: [
-          ...ratingData,
-          {
-            id: bubbleActionActive.id,
-            action: bubbleActionActive.action,
-            rating: rating,
-          },
-        ],
+        ratings: [...ratingData, newData],
       })
     );
 
+    setRatingData([...ratingData, newData]);
     setBubbleActionActive({
       id: "",
       action: "",
